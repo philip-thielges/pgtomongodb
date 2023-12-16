@@ -1,0 +1,33 @@
+version: "3.9"
+
+networks:
+  backend:
+    external: true
+
+services:
+  migration:
+    container_name: migrationservice
+    image: ${DOCKER_REGISTRY-}migration
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+
+  postgres_db:
+    container_name: postgresdb
+    image: postgres:13
+
+  postgres_seed:
+    container_name: postgresseed
+    image: postgres:13
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    networks:
+      - "backend"
+    ports:
+      - "${UI_PORT?}:8080"
+
+  mongo:
+    container_name: mongo
+    image: mongo:latest

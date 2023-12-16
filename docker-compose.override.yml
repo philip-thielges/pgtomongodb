@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  migration:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    networks:
+      - "backend"
+    depends_on:
+      mongo:
+        condition: service_started
+      postgres_seed:
+        condition: service_started
+    restart: always
+
+  mongo:
+    ports:
+      - 27017:27017
+    networks:
+      - "backend"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+
+  postgres_db:
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: "dvdrental"
+    ports:
+      - "5432:5432"
+    networks:
+      - "backend"
+
+  postgres_seed:
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      PGPASSWORD: "1234"
+    volumes:
+      - ./postgres/dvdrental.tar:/tmp/dvdrental.tar:ro
+    entrypoint:
+      [
+        "bash",
+        "-c",
+        "sleep 10 && pg_restore -h postgresdb -U postgres -d dvdrental /tmp/dvdrental.tar"
+      ]
+    restart: "no"
+    networks:
+      - "backend"
+    depends_on:
+      - "postgres_db"
