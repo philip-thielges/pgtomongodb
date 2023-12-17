@@ -43,7 +43,7 @@ namespace PostgreToMongo.Queries
 
         public Aufgabe4e(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4e", logger, mongoSettings)
+            : base(call, "Aufgabe 4e): Die IDs der 10 Kunden mit den meisten Entleihungen", logger, mongoSettings)
         {
         }
 

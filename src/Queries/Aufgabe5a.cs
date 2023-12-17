@@ -32,7 +32,7 @@ public class Aufgabe5a : Query
 
     public Aufgabe5a(ILogger<Query> logger,
         IOptions<MongoSettings> mongoSettings)
-        : base(call, "Aufgabe 5a", logger, mongoSettings)
+        : base(call, "Aufgabe 5a): Vergebt allen Mitarbeitern ein neues, sicheres Passwort", logger, mongoSettings)
     {
     }
 

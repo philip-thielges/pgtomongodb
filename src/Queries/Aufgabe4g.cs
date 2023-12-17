@@ -50,7 +50,7 @@ namespace PostgreToMongo.Queries
             };";
         public Aufgabe4g(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4g", logger, mongoSettings)
+            : base(call, "Aufgabe 4g): Die 10 meistgesehenen Filme unter Angabe des Titels, absteigend sortiert", logger, mongoSettings)
         {
         }
 

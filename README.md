@@ -16,6 +16,10 @@ Now if needed the stdout logs of the container can be saved to a file with the f
 
 Now the `migrationservice.log` contains all the logs.
 
+## MongoDB GUI Interface
+
+See e.g. MongoDB Compass for the migrated database: localhost: 27017; username: root; password: 1234
+
 ## Contributors
 
 - Florian (50 %)

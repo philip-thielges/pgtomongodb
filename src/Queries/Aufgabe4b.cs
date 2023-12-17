@@ -29,7 +29,7 @@ public class Aufgabe4b : Query
 
     public Aufgabe4b(ILogger<Query> logger,
         IOptions<MongoSettings> mongoSettings)
-        : base(call, "Aufgabe 4b", logger, mongoSettings)
+        : base(call, "Aufgabe 4b): Anzahl der unterschiedlichen Filme je Standort", logger, mongoSettings)
     {
     }
 

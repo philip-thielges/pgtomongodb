@@ -31,7 +31,7 @@ namespace PostgreToMongo.Queries
 
         public Aufgabe4c(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            :base(call, "Aufgabe 4C", logger, mongoSettings)
+            :base(call, "Aufgabe 4c): Die Vor- und Nachnamen der 10 Schauspieler mit den meisten Filmen,absteigend sortiert", logger, mongoSettings)
         {
         }
 

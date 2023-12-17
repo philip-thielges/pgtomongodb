@@ -23,7 +23,7 @@ namespace PostgreToMongo.Queries
                         .Add(""_id"", 0))
             };";
         public Aufgabe4a(ILogger<Aufgabe4a> logger, IOptions<MongoSettings> mongoSettings)
-            :base(call, "Aufgabe 4a", logger, mongoSettings)
+            :base(call, "Aufgabe 4a): Gesamtanzahl der verfügbaren Filme", logger, mongoSettings)
         {
         }
 

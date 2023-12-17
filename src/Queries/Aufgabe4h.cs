@@ -58,7 +58,7 @@ namespace PostgreToMongo.Queries
             };";
         public Aufgabe4h(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4h", logger, mongoSettings)
+            : base(call, "Aufgabe 4h): Die 3 meistgesehenen Filmkategorien", logger, mongoSettings)
         {
         }
 

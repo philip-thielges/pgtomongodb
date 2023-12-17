@@ -75,7 +75,7 @@ namespace PostgreToMongo.Queries
 
         public Aufgabe5b(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 5b", logger, mongoSettings)
+            : base(call, "Aufgabe 5b): Erzeugt einen neuen Standort (mit einer fiktiven Adresse) und verlegt das Inventar der beiden bisherigen Standorte dorthin (welche Nebenbedingungen müsst ihr dabei beachten?)", logger, mongoSettings)
         {
         }
 

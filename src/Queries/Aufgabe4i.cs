@@ -83,7 +83,7 @@ namespace PostgreToMongo.Queries
 
         public Aufgabe4i(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4i", logger, mongoSettings)
+            : base(call, "Aufgabe 4i): Eine Sicht auf die Kunden mit allen relevanten Informationen wie im View „customer_list“ der vorhandenen Postgres-Datenbank", logger, mongoSettings)
         {
         }
 

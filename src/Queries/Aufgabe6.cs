@@ -66,7 +66,7 @@ public class Aufgabe6 : Query
 
     public Aufgabe6(ILogger<Query> logger,
         IOptions<MongoSettings> mongoSettings)
-        : base(call, "Aufgabe 6", logger, mongoSettings)
+        : base(call, "Aufgabe 6): Löscht die folgende Daten: a. Alle Filme, die weniger als 60 Minuten Spielzeit haben b. Alle damit zusammenhängenden Entleihungen", logger, mongoSettings)
     {
     }
 

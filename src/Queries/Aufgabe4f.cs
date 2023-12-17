@@ -53,7 +53,7 @@ namespace PostgreToMongo.Queries
             };";
         public Aufgabe4f(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4f", logger, mongoSettings)
+            : base(call, "Aufgabe 4f): Die Vor- und Nachnamen sowie die Niederlassung der 10 Kunden, die das meiste Geld ausgegeben haben", logger, mongoSettings)
         {
         }
 

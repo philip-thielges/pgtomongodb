@@ -43,7 +43,7 @@ namespace PostgreToMongo.Queries
             };";
         public Aufgabe4d(ILogger<Query> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4d", logger, mongoSettings)
+            : base(call, "Aufgabe 4d): Die Erlöse je Mitarbeiter", logger, mongoSettings)
         {
         }
 
