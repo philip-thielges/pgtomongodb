@@ -1,4 +1,4 @@
-# Übung Datenbanken
+# Übung Konzepte der Datenbanktechnologie WS23
 
 Migration can be started with 'docker-compose up -d --build'
 
