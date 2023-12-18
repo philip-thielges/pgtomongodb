@@ -1,20 +1,10 @@
 # Übung Datenbanken
 
-Start the docker compose with
-> docker compose up -d --build
-To see the logs run the docker compose command without `-d` (logs of all containers!)
+Migration can be started with 'docker-compose up -d --build'
 
-## See logs
+## CRUD-Operations and Migration
 
-The logs will be printed to the console (stdout) of the respectively service.
-
-## End of migration
-
-The migration and querying is completed, if the stdout of the container shows `Queries finished`. This may need a few minutes!  
-Now if needed the stdout logs of the container can be saved to a file with the following command: 
-> docker logs migrationservice >& migrationservice.log
-
-Now the `migrationservice.log` contains all the logs.
+Die Logfile des zur Ausführung verwendeten Containers enthält sowohl das Ergebnis als auch den Befehl der CRUD-Operationen. Die Migration ist ebenfalls in der Logfile zu sehen, dauert etwas.
 
 ## MongoDB GUI Interface
 
@@ -22,9 +12,9 @@ See e.g. MongoDB Compass for the migrated database: localhost: 27017; username: 
 
 ## Contributors
 
-- Florian (50 %)
+- Johann (50 %)
   - Migration
   - Coding
-- Timo (50 %)
+- Philip (50 %)
   - Queries
     - SQL + Mongo
