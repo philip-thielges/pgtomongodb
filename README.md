@@ -4,7 +4,7 @@ Migration can be started with 'docker-compose up -d --build'
 
 ## CRUD-Operations and Migration
 
-Die Logfile des zur Ausführung verwendeten Containers enthält sowohl das Ergebnis als auch den Befehl der CRUD-Operationen. Die Migration ist ebenfalls in der Logfile zu sehen, dauert etwas.
+Die Logfile des zur Ausführung verwendeten Containers, in Docker Desktop zu sehen, enthält sowohl das Ergebnis als auch den Befehl der CRUD-Operationen. Die Migration ist ebenfalls in der Logfile zu sehen, dauert etwas.
 
 ## MongoDB GUI Interface
 
