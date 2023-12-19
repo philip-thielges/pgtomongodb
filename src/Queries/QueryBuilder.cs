@@ -10,21 +10,20 @@ namespace PostgreToMongo.Queries
     /// This class has to be implmented for all excersices.
     /// And all the excersices will than be injected to the DI.
     /// </summary>
-    public abstract class Query : IQuery
+    public abstract class QueryBuilder : IQueryBuilder
     {
-        private readonly ILogger logger;
-        private readonly string name, call;
+        private readonly ILogger customLogger;
+        private readonly string queryName, customCall;
 
-        public Query(string call,
+        public QueryBuilder(string call,
             string name,
             ILogger logger,
             IOptions<MongoSettings> mongoSettings)
         {
-            // the call as a string
-            this.call = call;
-            this.logger = logger;
-            // name of the excersice as string
-            this.name = name;
+            
+            this.customCall = call;
+            this.customLogger = logger;
+            this.queryName = name;
 
             // create the mongo db client to access the DB server
             var mongoClient = new MongoClient(
@@ -34,14 +33,11 @@ namespace PostgreToMongo.Queries
                 mongoSettings.Value.DatabaseName);
         }
 
-        /// <summary>
-        /// helper Metho to log the results, ercersice name and the call
-        /// </summary>
-        public void Log()
+        public void PerformLogging()
         {
-            logger.LogInformation(name);
-            logResults();
-            logCall();
+            customLogger.LogInformation(queryName);
+            LogResults();
+            LogQueryCall();
         }
 
         /// <summary>
@@ -49,23 +45,23 @@ namespace PostgreToMongo.Queries
         /// A child class has to be created for each Excersice.
         /// </summary>
         /// <returns></returns>
-        public abstract Task RunAsync();
+        public abstract Task ExecuteAsync();
 
         /// <summary>
         /// Contains all the results for select statements only
         /// </summary>
-        protected List<string> Results { get; set; }
+        protected List<string> QueryResults { get; set; }
         /// <summary>
         /// Contains the DB specified in the appsettings.json
         /// Should be DVD.
         /// </summary>
         protected IMongoDatabase Database { get; set; }
 
-        private void logCall() =>
-            logger.LogInformation($"Used by making the following call:\n{call}");
+        private void LogQueryCall() =>
+            customLogger.LogInformation($"----------------------------------\nVerwendeter Befehl:\n{customCall}");
 
-        private void logResults() =>
-            logger.LogInformation($"Ergebnisse:\n{string.Join("\n", Results ?? Array.Empty<string>().ToList())}");
+        private void LogResults() =>
+            customLogger.LogInformation($"----------------------------------\nErgebnis:\n{string.Join("\n", QueryResults ?? Array.Empty<string>().ToList())}");
 
         /// <summary>
         /// Helper Method to execute and aggregation call.
@@ -74,19 +70,19 @@ namespace PostgreToMongo.Queries
         /// <param name="pipeline"></param>
         /// <param name="allowDiskUse"></param>
         /// <returns></returns>
-        protected async Task AggregateAsync(IMongoCollection<BsonDocument> collection, PipelineDefinition<BsonDocument, BsonDocument> pipeline, bool allowDiskUse = true)
+        protected async Task PerformAggregationAsync(IMongoCollection<BsonDocument> collection, PipelineDefinition<BsonDocument, BsonDocument> filter, bool allowDiskUse = true)
         {
             var options = new AggregateOptions()
             {
                 AllowDiskUse = allowDiskUse
             };
 
-            using (var cursor = await collection.AggregateAsync(pipeline, options))
+            using (var cursor = await collection.AggregateAsync(filter, options))
             {
                 while (await cursor.MoveNextAsync())
                 {
                     var batch = cursor.Current;
-                    Results = batch.Select(x => x.ToJson()).ToList();
+                    QueryResults = batch.Select(x => x.ToJson()).ToList();
 
                 }
             }

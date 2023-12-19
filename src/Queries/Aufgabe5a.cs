@@ -9,9 +9,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries;
 
-public class Aufgabe5a : Query
+public class Aufgabe5a : QueryBuilder
 {
-    private static readonly string call = @"
+    private static readonly string customCall = @"
         var collection = Database.GetCollection<BsonDocument>(""staff"");
         using var sha1 = SHA1.Create();
 
@@ -30,15 +30,16 @@ public class Aufgabe5a : Query
         collection.UpdateOne(""{staff_id : 1}"", ""{$set: { \""password\"" : \"""" + hash + ""\""}}"");
         collection.UpdateOne(""{staff_id : 2}"", ""{$set: { \""password\"" : \"""" + hash2 + ""\""}}"");";
 
-    public Aufgabe5a(ILogger<Query> logger,
+    public Aufgabe5a(ILogger<QueryBuilder> logger,
         IOptions<MongoSettings> mongoSettings)
-        : base(call, "Aufgabe 5a): Vergebt allen Mitarbeitern ein neues, sicheres Passwort", logger, mongoSettings)
+        : base(customCall, "Aufgabe 5a): Vergebt allen Mitarbeitern ein neues, sicheres Passwort", logger, mongoSettings)
     {
     }
 
-    public async override Task RunAsync()
+    public async override Task ExecuteAsync()
     {
-        var collection = Database.GetCollection<BsonDocument>("staff");
+        //Use GetCollection Method to get the staff Collection
+        var staffCollection = Database.GetCollection<BsonDocument>("staff");
         using var sha1 = SHA1.Create();
 
         var hash = Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes("mbnXXstYD#&S6dS6xeBZ3")));
@@ -53,8 +54,8 @@ public class Aufgabe5a : Query
          * - Ein Salt verhindert, dass zwei mal das selbe Passwort auch den selben Hash ergeben.
          * - Die Iterationen verlangsamen den Prozess
          */
-        collection.UpdateOne("{staff_id : 1}", "{$set: { \"password\" : \"" + hash + "\"}}");
-        collection.UpdateOne("{staff_id : 2}", "{$set: { \"password\" : \"" + hash2 + "\"}}");
+        staffCollection.UpdateOne("{staff_id : 1}", "{$set: { \"password\" : \"" + hash + "\"}}");
+        staffCollection.UpdateOne("{staff_id : 2}", "{$set: { \"password\" : \"" + hash2 + "\"}}");
 
     }
 }

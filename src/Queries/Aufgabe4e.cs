@@ -8,9 +8,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries
 {
-    public class Aufgabe4e : Query
+    public class Aufgabe4e : QueryBuilder
     {
-        private static readonly string call = @"var collection = Database.GetCollection<BsonDocument>(""customer"");
+        private static readonly string customCall = @"var customerCollection = Database.GetCollection<BsonDocument>(""customer"");
 
             PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
             {
@@ -41,17 +41,18 @@ namespace PostgreToMongo.Queries
                 new BsonDocument(""$limit"", 10)
             };";
 
-        public Aufgabe4e(ILogger<Query> logger,
+        public Aufgabe4e(ILogger<QueryBuilder> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4e): Die IDs der 10 Kunden mit den meisten Entleihungen", logger, mongoSettings)
+            : base(customCall, "Aufgabe 4e): Die IDs der 10 Kunden mit den meisten Entleihungen", logger, mongoSettings)
         {
         }
 
-        public override Task RunAsync()
+        public override Task ExecuteAsync()
         {
-            var collection = Database.GetCollection<BsonDocument>("customer");
+                //Use GetCollection Method to get the customer Collection
+            var customerCollection = Database.GetCollection<BsonDocument>("customer");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument("$project", new BsonDocument()
                         .Add("_id", 0)
@@ -68,19 +69,19 @@ namespace PostgreToMongo.Queries
                         .Add("_id", new BsonDocument()
                                 .Add("customer\u1390customer_id", "$customer.customer_id")
                         )
-                        .Add("COUNT(*)", new BsonDocument()
+                        .Add("count", new BsonDocument()
                                 .Add("$sum", 1)
                         )),
                 new BsonDocument("$project", new BsonDocument()
                         .Add("customer.customer_id", "$_id.customer\u1390customer_id")
-                        .Add("COUNT(*)", "$COUNT(*)")
+                        .Add("count", "$count")
                         .Add("_id", 0)),
                 new BsonDocument("$sort", new BsonDocument()
-                        .Add("COUNT(*)", -1)),
+                        .Add("count", -1)),
                 new BsonDocument("$limit", 10)
             };
 
-            return AggregateAsync(collection, pipeline);
+            return PerformAggregationAsync(customerCollection, filter);
         }
     }
 }

@@ -7,9 +7,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries
 {
-    public class Aufgabe4a:Query
+    public class Aufgabe4a:QueryBuilder
     {
-        private static readonly string call = @"var collection = Database.GetCollection<BsonDocument>(""inventory"");
+        private static readonly string customCall = @"var inventoryCollection = Database.GetCollection<BsonDocument>(""inventory"");
 
             PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
             {
@@ -23,29 +23,29 @@ namespace PostgreToMongo.Queries
                         .Add(""_id"", 0))
             };";
         public Aufgabe4a(ILogger<Aufgabe4a> logger, IOptions<MongoSettings> mongoSettings)
-            :base(call, "Aufgabe 4a): Gesamtanzahl der verfügbaren Filme", logger, mongoSettings)
+            :base(customCall, "Aufgabe 4a): Gesamtanzahl der verfügbaren Filme", logger, mongoSettings)
         {
         }
 
-        public override Task RunAsync()
+        public override Task ExecuteAsync()
         {
-            var collection = Database.GetCollection<BsonDocument>("inventory");
+            //Use GetCollection Method to get the inventory Collection
+            var inventoryCollection = Database.GetCollection<BsonDocument>("inventory");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument("$group", new BsonDocument()
                         .Add("_id", new BsonDocument())
-                        .Add("COUNT(*)", new BsonDocument()
+                        .Add("SUM", new BsonDocument()
                                 .Add("$sum", 1)
                         )),
                 new BsonDocument("$project", new BsonDocument()
-                        .Add("COUNT(*)", "$COUNT(*)")
+                        .Add("SUMME", "$SUM")
                         .Add("_id", 0))
+
             };
 
-
-            return AggregateAsync(collection, pipeline);
+            return PerformAggregationAsync(inventoryCollection, filter);
         }
     }
 }
-

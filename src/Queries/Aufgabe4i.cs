@@ -8,9 +8,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries
 {
-    public class Aufgabe4i : Query
+    public class Aufgabe4i : QueryBuilder
     {
-        private static readonly string call = @"PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+        private static readonly string customCall = @"PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0.0)
@@ -81,15 +81,15 @@ namespace PostgreToMongo.Queries
                 }
             }";
 
-        public Aufgabe4i(ILogger<Query> logger,
+        public Aufgabe4i(ILogger<QueryBuilder> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4i): Eine Sicht auf die Kunden mit allen relevanten Informationen wie im View „customer_list“ der vorhandenen Postgres-Datenbank", logger, mongoSettings)
+            : base(customCall, "Aufgabe 4i): Eine Sicht auf die Kunden mit allen relevanten Informationen wie im View „customer_list“ der vorhandenen Postgres-Datenbank", logger, mongoSettings)
         {
         }
 
-        public async override Task RunAsync()
+        public async override Task ExecuteAsync()
         {
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument("$project", new BsonDocument()
                         .Add("_id", 0.0)
@@ -142,21 +142,21 @@ namespace PostgreToMongo.Queries
                         .Add("sid", "$customer.store_id"))
             };
             Database.DropCollection("customer_list");
-            await Database.CreateViewAsync("customer_list", "customer", pipeline);
+            await Database.CreateViewAsync("customer_list", "customer", filter);
 
-
-            IMongoCollection<BsonDocument> collection = Database.GetCollection<BsonDocument>("customer_list");
+                //Use GetCollection Method to get the customer_list Collection
+            IMongoCollection<BsonDocument> customer_list_Collection = Database.GetCollection<BsonDocument>("customer_list");
             var options = new FindOptions<BsonDocument>()
             {
                 Limit = 10
             };
 
-            using (var cursor = await collection.FindAsync(new BsonDocument(), options))
+            using (var cursor = await customer_list_Collection.FindAsync(new BsonDocument(), options))
             {
                 while (await cursor.MoveNextAsync())
                 {
                     var batch = cursor.Current;
-                    Results = batch.Select(x => x.ToJson()).ToList();
+                    QueryResults = batch.Select(x => x.ToJson()).ToList();
 
                 }
             }

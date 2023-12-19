@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 networks:
   backend:
@@ -11,14 +11,50 @@ services:
     build:
       context: ./src
       dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "4443:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    networks:
+      - "backend"
+    depends_on:
+      mongo:
+        condition: service_started
+      postgres_seed:
+        condition: service_started
+    restart: always
 
   postgres_db:
     container_name: postgresdb
     image: postgres:13
 
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: "dvdrental"
+
+    ports:
+      - "5432:5432"
+    networks:
+      - "backend"
+
   postgres_seed:
-    container_name: postgresseed
-    image: postgres:13
+      container_name: postgresseed
+      image: postgres:13
+      environment:
+          POSTGRES_HOST_AUTH_METHOD: "trust"
+          PGPASSWORD: "1234"
+      volumes:
+          - ./postgres/dvdrental.tar:/tmp/dvdrental.tar:ro
+      entrypoint: [ "bash", "-c", "sleep 10 && pg_restore -h postgresdb -U postgres -d dvdrental /tmp/dvdrental.tar" ]
+      restart: "no"
+      networks:
+        - "backend"
+      depends_on:
+        - "postgres_db"
 
   adminer:
     container_name: adminer
@@ -31,3 +67,10 @@ services:
   mongo:
     container_name: mongo
     image: mongo:latest
+    ports:
+      - 27017:27017
+    networks:
+      - "backend"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 1234

@@ -8,9 +8,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries
 {
-    public class Aufgabe4h : Query
+    public class Aufgabe4h : QueryBuilder
     {
-        private static readonly string call = @"var collection = Database.GetCollection<BsonDocument>(""category"");
+        private static readonly string customCall = @"var categoryCollection = Database.GetCollection<BsonDocument>(""category"");
 
             PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
             {
@@ -56,17 +56,18 @@ namespace PostgreToMongo.Queries
                         .Add(""COUNT(*)"", -1)),
                 new BsonDocument(""$limit"", 3)
             };";
-        public Aufgabe4h(ILogger<Query> logger,
+        public Aufgabe4h(ILogger<QueryBuilder> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4h): Die 3 meistgesehenen Filmkategorien", logger, mongoSettings)
+            : base(customCall, "Aufgabe 4h): Die 3 meistgesehenen Filmkategorien", logger, mongoSettings)
         {
         }
 
-        public override Task RunAsync()
+        public override Task ExecuteAsync()
         {
-            var collection = Database.GetCollection<BsonDocument>("category");
+                //Use GetCollection Method to get the category Collection
+            var categoryCollection = Database.GetCollection<BsonDocument>("category");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument("$project", new BsonDocument()
                         .Add("_id", 0)
@@ -99,20 +100,20 @@ namespace PostgreToMongo.Queries
                         .Add("_id", new BsonDocument()
                                 .Add("category\u1390name", "$category.name")
                         )
-                        .Add("COUNT(*)", new BsonDocument()
+                        .Add("count", new BsonDocument()
                                 .Add("$sum", 1)
                         )),
                 new BsonDocument("$project", new BsonDocument()
                         .Add("category.name", "$_id.category\u1390name")
-                        .Add("COUNT(*)", "$COUNT(*)")
+                        .Add("count", "$count")
                         .Add("_id", 0)),
                 new BsonDocument("$sort", new BsonDocument()
-                        .Add("COUNT(*)", -1)),
+                        .Add("count", -1)),
                 new BsonDocument("$limit", 3)
             };
 
 
-            return AggregateAsync(collection, pipeline);
+            return PerformAggregationAsync(categoryCollection, filter);
         }
     }
 }

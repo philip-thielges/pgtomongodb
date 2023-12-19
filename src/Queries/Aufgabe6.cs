@@ -5,9 +5,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries;
 
-public class Aufgabe6 : Query
+public class Aufgabe6 : QueryBuilder
 {
-    private static readonly string call = @"// Es werden die Filme unter 60 min aus  der “film” Tabelle gelöscht, zudem werden die Entleihungen für diese Filme gelöscht. Aus dem Inventar oder an anderer Stelle werden die Filme nicht gelöscht da nicht explizit gefordert.
+    private static readonly string customCall = @"// Es werden die Filme unter 60 min aus  der “film” Tabelle gelöscht, zudem werden die Entleihungen für diese Filme gelöscht. Aus dem Inventar oder an anderer Stelle werden die Filme nicht gelöscht da nicht explizit gefordert.
             // Aufgabe b
             var pipeline = new BsonDocument[]
             {
@@ -64,17 +64,16 @@ public class Aufgabe6 : Query
             var collection = Database.GetCollection<BsonDocument>(""film"");
             await collection.DeleteManyAsync(""{ length: { $lt: 60 } }"");";
 
-    public Aufgabe6(ILogger<Query> logger,
+    public Aufgabe6(ILogger<QueryBuilder> logger,
         IOptions<MongoSettings> mongoSettings)
-        : base(call, "Aufgabe 6): Löscht die folgende Daten: a. Alle Filme, die weniger als 60 Minuten Spielzeit haben b. Alle damit zusammenhängenden Entleihungen", logger, mongoSettings)
+        : base(customCall, "Aufgabe 6): Löscht die folgende Daten: a. Alle Filme, die weniger als 60 Minuten Spielzeit haben b. Alle damit zusammenhängenden Entleihungen", logger, mongoSettings)
     {
     }
 
-    public async override Task RunAsync()
+    public async override Task ExecuteAsync()
     {
-        // Es werden die Filme unter 60 min aus  der “film” Tabelle gelöscht, zudem werden die Entleihungen für diese Filme gelöscht. Aus dem Inventar oder an anderer Stelle werden die Filme nicht gelöscht da nicht explizit gefordert.
         // Aufgabe b
-        var pipeline = new BsonDocument[]
+        var filter = new BsonDocument[]
         {
             new BsonDocument("$project", new BsonDocument()
                     .Add("_id", 0)
@@ -103,7 +102,7 @@ public class Aufgabe6 : Query
                     .Add("rental_id", "$rental.rental_id")
                     .Add("_id", 0))
         };
-
+        //Use GetCollection Method to get the rental Collection
         var rentalCollection = Database.GetCollection<BsonDocument>("rental");
 
         var options = new AggregateOptions()
@@ -112,7 +111,7 @@ public class Aufgabe6 : Query
         };
 
         BsonArray ids = new BsonArray();
-        using (var cursor = await rentalCollection.AggregateAsync<BsonDocument>(pipeline, options))
+        using (var cursor = await rentalCollection.AggregateAsync<BsonDocument>(filter, options))
         {
             while (await cursor.MoveNextAsync())
             {
@@ -126,8 +125,9 @@ public class Aufgabe6 : Query
         }
 
         // Aufgabe a
-        var collection = Database.GetCollection<BsonDocument>("film");
-        await collection.DeleteManyAsync("{ length: { $lt: 60 } }");
+        //Use GetCollection Method to get the film Collection
+        var filmCollection = Database.GetCollection<BsonDocument>("film");
+        await filmCollection.DeleteManyAsync("{ length: { $lt: 60 } }");
 
     }
 }

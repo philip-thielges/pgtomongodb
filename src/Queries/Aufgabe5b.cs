@@ -7,9 +7,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries
 {
-    public class Aufgabe5b : Query
+    public class Aufgabe5b : QueryBuilder
     {
-        private static readonly string call = @"// Der neuer Store mit der ID 3 erhält eine eindeutige Adress ID und das gesamte Inventar wird auf Store 3 aktualisiert. Die Entleihungen und Zuordnung der Kunden zu den Stores werden vorerst nicht angepasst, da die Entleihungen ja in den alten Stores stattgefunden haben und eine Aktualisierung hier irreführend wäre. Die neue Store ID soll dort (bei Kunden und Entleihungen) dann erst aktualisiert werden, wenn der Kunden das erste mal etwas im neuen Store 3 ausleiht.
+        private static readonly string customCall = @"// Der neuer Store mit der ID 3 erhält eine eindeutige Adress ID und das gesamte Inventar wird auf Store 3 aktualisiert. Die Entleihungen und Zuordnung der Kunden zu den Stores werden vorerst nicht angepasst, da die Entleihungen ja in den alten Stores stattgefunden haben und eine Aktualisierung hier irreführend wäre. Die neue Store ID soll dort (bei Kunden und Entleihungen) dann erst aktualisiert werden, wenn der Kunden das erste mal etwas im neuen Store 3 ausleiht.
 
             var storeCollection = Database.GetCollection<BsonDocument>(""store"");
             var addressCollection = Database.GetCollection<BsonDocument>(""address"");
@@ -73,21 +73,21 @@ namespace PostgreToMongo.Queries
 
             await inventoryCollection.UpdateManyAsync(""{store_id : {$gt: 0}}"", ""{$set: { \""store_id\"" : "" + maxStoreId + ""}}"");";
 
-        public Aufgabe5b(ILogger<Query> logger,
+        public Aufgabe5b(ILogger<QueryBuilder> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 5b): Erzeugt einen neuen Standort (mit einer fiktiven Adresse) und verlegt das Inventar der beiden bisherigen Standorte dorthin (welche Nebenbedingungen müsst ihr dabei beachten?)", logger, mongoSettings)
+            : base(customCall, "Aufgabe 5b): Erzeugt einen neuen Standort (mit einer fiktiven Adresse) und verlegt das Inventar der beiden bisherigen Standorte dorthin (welche Nebenbedingungen müsst ihr dabei beachten?)", logger, mongoSettings)
         {
         }
 
-        public async override Task RunAsync()
+        public async override Task ExecuteAsync()
         {
-            // Der neuer Store mit der ID 3 erhält eine eindeutige Adress ID und das gesamte Inventar wird auf Store 3 aktualisiert. Die Entleihungen und Zuordnung der Kunden zu den Stores werden vorerst nicht angepasst, da die Entleihungen ja in den alten Stores stattgefunden haben und eine Aktualisierung hier irreführend wäre. Die neue Store ID soll dort (bei Kunden und Entleihungen) dann erst aktualisiert werden, wenn der Kunden das erste mal etwas im neuen Store 3 ausleiht.
+            //Use GetCollection Method to get the 3 Collections; 
             var storeCollection = Database.GetCollection<BsonDocument>("store");
             var addressCollection = Database.GetCollection<BsonDocument>("address");
             var inventoryCollection = Database.GetCollection<BsonDocument>("inventory");
 
 
-            var getMaxAddressIdPipeline = new BsonDocument[]
+            var MaxAddressId_filter = new BsonDocument[]
             {
                 new BsonDocument("$group", new BsonDocument()
                         .Add("_id", new BsonDocument())
@@ -99,7 +99,7 @@ namespace PostgreToMongo.Queries
                         .Add("_id", 0))
             };
 
-            var getMaxStoreIdPipeline = new BsonDocument[]
+            var MaxStoreId_filter = new BsonDocument[]
             {
                 new BsonDocument("$group", new BsonDocument()
                         .Add("_id", new BsonDocument())
@@ -112,8 +112,8 @@ namespace PostgreToMongo.Queries
             };
 
 
-            int maxAddressId = await GetMaxIdAsync(getMaxAddressIdPipeline, addressCollection);
-            int maxStoreId = await GetMaxIdAsync(getMaxStoreIdPipeline, storeCollection);
+            int maxAddressId = await GetMaxIdAsync(MaxAddressId_filter, addressCollection);
+            int maxStoreId = await GetMaxIdAsync(MaxStoreId_filter, storeCollection);
 
 
             var newStore = new BsonDocument
@@ -128,12 +128,11 @@ namespace PostgreToMongo.Queries
             var newAddress = new BsonDocument
             {
                 {"address_id", maxAddressId },
-                {"address", "1 Was eine Straße" },
-                //{"address2", null },
-                {"district", "St. Pauli" },
+                {"address", "Street Nr.10" },
+                {"district", "München" },
                 {"city_id", 1 },
-                {"postal_code", "20359" },
-                {"phone", "0123456789" },
+                {"postal_code", "78341" },
+                {"phone", "0498929834727" },
                 {"last_update", DateTime.UtcNow },
 
             };
@@ -146,14 +145,14 @@ namespace PostgreToMongo.Queries
 
         }
 
-        private async Task<int> GetMaxIdAsync(PipelineDefinition<BsonDocument, BsonDocument> pipeline, IMongoCollection<BsonDocument> collection)
+        private async Task<int> GetMaxIdAsync(PipelineDefinition<BsonDocument, BsonDocument> filter, IMongoCollection<BsonDocument> collection)
         {
             var options = new AggregateOptions()
             {
                 AllowDiskUse = true
             };
 
-            using (var cursor = await collection.AggregateAsync<BsonDocument>(pipeline, options))
+            using (var cursor = await collection.AggregateAsync<BsonDocument>(filter, options))
             {
                 while (await cursor.MoveNextAsync())
                 {

@@ -20,23 +20,20 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IPostgreService, PostgreService>();
 
         // Add Queries
-        // Aufgabe 4...
-        services.AddScoped<IQuery, Aufgabe4a>();
-        services.AddScoped<IQuery, Aufgabe4b>();
-        services.AddScoped<IQuery, Aufgabe4c>();
-        services.AddScoped<IQuery, Aufgabe4d>();
-        services.AddScoped<IQuery, Aufgabe4e>();
-        services.AddScoped<IQuery, Aufgabe4f>();
-        services.AddScoped<IQuery, Aufgabe4g>();
-        services.AddScoped<IQuery, Aufgabe4h>();
-        services.AddScoped<IQuery, Aufgabe4i>();
+        services.AddScoped<IQueryBuilder, Aufgabe4a>();
+        services.AddScoped<IQueryBuilder, Aufgabe4b>();
+        services.AddScoped<IQueryBuilder, Aufgabe4c>();
+        services.AddScoped<IQueryBuilder, Aufgabe4d>();
+        services.AddScoped<IQueryBuilder, Aufgabe4e>();
+        services.AddScoped<IQueryBuilder, Aufgabe4f>();
+        services.AddScoped<IQueryBuilder, Aufgabe4g>();
+        services.AddScoped<IQueryBuilder, Aufgabe4h>();
+        services.AddScoped<IQueryBuilder, Aufgabe4i>();
 
-        // Aufgabe 5
-        services.AddScoped<IQuery, Aufgabe5a>();
-        services.AddScoped<IQuery, Aufgabe5b>();
+        services.AddScoped<IQueryBuilder, Aufgabe5a>();
+        services.AddScoped<IQueryBuilder, Aufgabe5b>();
 
-        // Aufgabe 6...
-        services.AddScoped<IQuery, Aufgabe6>();
+        services.AddScoped<IQueryBuilder, Aufgabe6>();
 
         services.AddHostedService<Worker>();
     })

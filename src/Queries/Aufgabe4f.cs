@@ -8,9 +8,9 @@ using PostgreToMongo.Options;
 
 namespace PostgreToMongo.Queries
 {
-    public class Aufgabe4f : Query
+    public class Aufgabe4f : QueryBuilder
     {
-        private static readonly string call = @"var collection = Database.GetCollection<BsonDocument>(""customer"");
+        private static readonly string customCall = @"var customerCollection = Database.GetCollection<BsonDocument>(""customer"");
 
             PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
             {
@@ -51,17 +51,18 @@ namespace PostgreToMongo.Queries
                         .Add(""customer.store_id"", ""$customer.store_id"")), 
                 new BsonDocument(""$limit"", 10)
             };";
-        public Aufgabe4f(ILogger<Query> logger,
+        public Aufgabe4f(ILogger<QueryBuilder> logger,
             IOptions<MongoSettings> mongoSettings)
-            : base(call, "Aufgabe 4f): Die Vor- und Nachnamen sowie die Niederlassung der 10 Kunden, die das meiste Geld ausgegeben haben", logger, mongoSettings)
+            : base(customCall, "Aufgabe 4f): Die Vor- und Nachnamen sowie die Niederlassung der 10 Kunden, die das meiste Geld ausgegeben haben", logger, mongoSettings)
         {
         }
 
-        public override Task RunAsync()
+        public override Task ExecuteAsync()
         {
-            var collection = Database.GetCollection<BsonDocument>("customer");
+                //Use GetCollection Method to get the customer Collection
+            var customerCollection = Database.GetCollection<BsonDocument>("customer");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument("$project", new BsonDocument()
                         .Add("_id", 0)
@@ -83,11 +84,9 @@ namespace PostgreToMongo.Queries
                         )
                         .Add("SUM(payment\u1390amount)", new BsonDocument()
                                 .Add("$sum", "$payment.amount")
-                        )),
-                new BsonDocument("$project", new BsonDocument()
+                        )), new BsonDocument("$project", new BsonDocument()
                         .Add("customer.last_name", "$_id.customer\u1390last_name")
                         .Add("customer.first_name", "$_id.customer\u1390first_name")
-                        .Add("SUM(payment.amount)", "$SUM(payment\u1390amount)")
                         .Add("customer.store_id", "$_id.customer\u1390store_id")
                         .Add("_id", 0)),
                 new BsonDocument("$sort", new BsonDocument()
@@ -96,12 +95,11 @@ namespace PostgreToMongo.Queries
                         .Add("_id", 0)
                         .Add("customer.last_name", "$customer.last_name")
                         .Add("customer.first_name", "$customer.first_name")
-                        .Add("SUM(payment\u1390amount)", "$SUM(payment.amount)")
                         .Add("customer.store_id", "$customer.store_id")),
                 new BsonDocument("$limit", 10)
             };
 
-            return AggregateAsync(collection, pipeline);
+            return PerformAggregationAsync(customerCollection, filter);
         }
     }
 }

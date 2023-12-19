@@ -14,7 +14,5 @@ See e.g. MongoDB Compass for the migrated database: localhost: 27017; username: 
 
 - Johann (50 %)
   - Migration
-  - Coding
 - Philip (50 %)
   - Queries
-    - SQL + Mongo

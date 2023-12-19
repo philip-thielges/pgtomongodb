@@ -13,13 +13,13 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly IPostgreService _postgreService;
     private readonly IMongoService _mongoService;
-    private readonly IEnumerable<IQuery> queries;
+    private readonly IEnumerable<IQueryBuilder> queries;
 
     // constructer injection by dependency injection
     public Worker(ILogger<Worker> logger,
         IPostgreService postgreService,
         IMongoService mongoService,
-        IEnumerable<IQuery> queries)
+        IEnumerable<IQueryBuilder> queries)
     {
         _logger = logger;
         this._postgreService = postgreService;
@@ -29,7 +29,7 @@ public class Worker : BackgroundService
    
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Start migration.");
+        _logger.LogInformation("Start migration:\n------------------------------------\n");
 
         // get data for all tables specified below
         foreach (var table in tables)
@@ -40,8 +40,8 @@ public class Worker : BackgroundService
             await _mongoService.AddTableAsync(tableDescription);
         }
 
-        _logger.LogInformation("Migration finished");
-        _logger.LogInformation("Start Queries");
+        _logger.LogInformation("\n------------------------------------\nMigration finished\n-----------------------------------");
+        _logger.LogInformation("\n-------------------------------------\nStart Queries\n------------------------------------\n");
 
         // Do queries
         foreach (var query in queries)
@@ -49,9 +49,9 @@ public class Worker : BackgroundService
             try
             {
                 // execute the specified query for the exersice
-                await query.RunAsync();
+                await query.ExecuteAsync();
                 // log the result if selects and the used query
-                query.Log();
+                query.PerformLogging();
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ public class Worker : BackgroundService
             }
         }
 
-        _logger.LogInformation("Queries finished");
+        _logger.LogInformation("\n------------------------------------\nQueries finished");
     }
 }
 
