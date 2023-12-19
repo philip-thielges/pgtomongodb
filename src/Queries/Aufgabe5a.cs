@@ -12,7 +12,8 @@ namespace PostgreToMongo.Queries;
 public class Aufgabe5a : QueryBuilder
 {
     private static readonly string customCall = @"
-        var collection = Database.GetCollection<BsonDocument>(""staff"");
+        //Use GetCollection Method to get the staff Collection
+        var staffCollection = Database.GetCollection<BsonDocument>(""staff"");
         using var sha1 = SHA1.Create();
 
         var hash = Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(""mbnXXstYD#&S6dS6xeBZ3"")));

@@ -16,7 +16,7 @@ namespace PostgreToMongo.Queries
             var inventoryCollection = Database.GetCollection<BsonDocument>(""inventory"");
 
 
-            var getMaxAddressIdPipeline = new BsonDocument[]
+            var MaxAddressId_filter = new BsonDocument[]
             {
                 new BsonDocument(""$group"", new BsonDocument()
                         .Add(""_id"", new BsonDocument())
@@ -28,7 +28,7 @@ namespace PostgreToMongo.Queries
                         .Add(""_id"", 0))
             };
 
-            var getMaxStoreIdPipeline = new BsonDocument[]
+            var MaxStoreId_filter = new BsonDocument[]
             {
                 new BsonDocument(""$group"", new BsonDocument()
                         .Add(""_id"", new BsonDocument())
@@ -41,8 +41,8 @@ namespace PostgreToMongo.Queries
             };
 
 
-            int maxAddressId = await GetMaxIdAsync(getMaxAddressIdPipeline, addressCollection);
-            int maxStoreId = await GetMaxIdAsync(getMaxStoreIdPipeline, storeCollection);
+            int maxAddressId = await GetMaxIdAsync(MaxAddressId_filter, addressCollection);
+            int maxStoreId = await GetMaxIdAsync(MaxStoreId_filter, storeCollection);
 
 
             var newStore = new BsonDocument
@@ -57,12 +57,11 @@ namespace PostgreToMongo.Queries
             var newAddress = new BsonDocument
             {
                 {""address_id"", maxAddressId },
-                {""address"", ""1 Was eine Straße"" },
-                //{""address2"", null },
-                {""district"", ""St. Pauli"" },
+                {""address"", ""Street Nr.10"" },
+                {""district"", ""München"" },
                 {""city_id"", 1 },
-                {""postal_code"", ""20359"" },
-                {""phone"", ""0123456789"" },
+                {""postal_code"", ""78341"" },
+                {""phone"", ""0498929834727"" },
                 {""last_update"", DateTime.UtcNow },
 
             };

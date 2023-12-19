@@ -12,7 +12,7 @@ namespace PostgreToMongo.Queries
     {
         private static readonly string customCall = @"var categoryCollection = Database.GetCollection<BsonDocument>(""category"");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0)
@@ -45,15 +45,15 @@ namespace PostgreToMongo.Queries
                         .Add(""_id"", new BsonDocument()
                                 .Add(""category\u1390name"", ""$category.name"")
                         )
-                        .Add(""COUNT(*)"", new BsonDocument()
+                        .Add(""count"", new BsonDocument()
                                 .Add(""$sum"", 1)
                         )),
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""category.name"", ""$_id.category\u1390name"")
-                        .Add(""COUNT(*)"", ""$COUNT(*)"")
+                        .Add(""count"", ""$count"")
                         .Add(""_id"", 0)),
                 new BsonDocument(""$sort"", new BsonDocument()
-                        .Add(""COUNT(*)"", -1)),
+                        .Add(""count"", -1)),
                 new BsonDocument(""$limit"", 3)
             };";
         public Aufgabe4h(ILogger<QueryBuilder> logger,

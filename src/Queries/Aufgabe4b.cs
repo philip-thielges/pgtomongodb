@@ -11,19 +11,20 @@ public class Aufgabe4b : QueryBuilder
 {
     private static readonly string customCall = @"var inventoryCollection = Database.GetCollection<BsonDocument>(""inventory"");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+        PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument(""$group"", new BsonDocument()
                         .Add(""_id"", new BsonDocument()
-                                .Add(""store_id"", ""$store_id"")
+                                .Add(""Standort_Store"", ""$store_id"")
                         )
-                        .Add(""unique_count"", new BsonDocument()
+                        .Add(""count_per_store"", new BsonDocument()
                                 .Add(""$addToSet"", ""$film_id"")
-                        )), 
+                        )),
                 new BsonDocument(""$project"", new BsonDocument()
-                        .Add(""store_id"", 1.0)
-                        .Add(""count"", new BsonDocument()
-                                .Add(""$size"", ""$unique_count"")
+                        .Add(""_id"", 0) // Exclude the _id field
+                        .Add(""store_id"", ""$_id.Standort_Store"")
+                        .Add(""SUMME"", new BsonDocument()
+                                .Add(""$size"", ""$count_per_store"")
                         ))
             };";
 

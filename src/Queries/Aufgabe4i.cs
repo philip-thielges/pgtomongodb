@@ -10,7 +10,7 @@ namespace PostgreToMongo.Queries
 {
     public class Aufgabe4i : QueryBuilder
     {
-        private static readonly string customCall = @"PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+        private static readonly string customCall = @"PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0.0)
@@ -62,7 +62,7 @@ namespace PostgreToMongo.Queries
                         )
                         .Add(""sid"", ""$customer.store_id""))
             };
-
+            Database.DropCollection(""customer_list"");
             await Database.CreateViewAsync(""customer_list"", ""customer"", pipeline);
 
             IMongoCollection<BsonDocument> collection = Database.GetCollection<BsonDocument>(""customer_list"");

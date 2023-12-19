@@ -12,7 +12,7 @@ namespace PostgreToMongo.Queries
     {
         private static readonly string customCall = @"var staffCollection = Database.GetCollection<BsonDocument>(""staff"");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0)
@@ -28,17 +28,13 @@ namespace PostgreToMongo.Queries
                 new BsonDocument(""$group"", new BsonDocument()
                         .Add(""_id"", new BsonDocument()
                                 .Add(""staff\u1390staff_id"", ""$staff.staff_id"")
-                                .Add(""staff\u1390last_name"", ""$staff.last_name"")
-                                .Add(""staff\u1390first_name"", ""$staff.first_name"")
                         )
                         .Add(""SUM(payment\u1390amount)"", new BsonDocument()
                                 .Add(""$sum"", ""$payment.amount"")
                         )),
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""staff.staff_id"", ""$_id.staff\u1390staff_id"")
-                        .Add(""staff.last_name"", ""$_id.staff\u1390last_name"")
-                        .Add(""staff.first_name"", ""$_id.staff\u1390first_name"")
-                        .Add(""SUM(payment\u1390amount)"", ""$SUM(payment\u1390amount)"")
+                        .Add(""sum"", ""$SUM(payment\u1390amount)"")
                         .Add(""_id"", 0))
             };";
         public Aufgabe4d(ILogger<QueryBuilder> logger,

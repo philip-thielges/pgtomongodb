@@ -9,7 +9,7 @@ public class Aufgabe6 : QueryBuilder
 {
     private static readonly string customCall = @"// Es werden die Filme unter 60 min aus  der “film” Tabelle gelöscht, zudem werden die Entleihungen für diese Filme gelöscht. Aus dem Inventar oder an anderer Stelle werden die Filme nicht gelöscht da nicht explizit gefordert.
             // Aufgabe b
-            var pipeline = new BsonDocument[]
+            var filter = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0)
@@ -47,7 +47,7 @@ public class Aufgabe6 : QueryBuilder
             };
 
             BsonArray ids = new BsonArray();
-            using (var cursor = await rentalCollection.AggregateAsync<BsonDocument>(pipeline, options))
+            using (var cursor = await rentalCollection.AggregateAsync<BsonDocument>(filter, options))
             {
                 while (await cursor.MoveNextAsync())
                 {

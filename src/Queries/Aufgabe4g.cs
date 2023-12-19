@@ -12,7 +12,7 @@ namespace PostgreToMongo.Queries
     {
         private static readonly string customCall = @"var filmCollection = Database.GetCollection<BsonDocument>(""film"");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0)
@@ -37,15 +37,15 @@ namespace PostgreToMongo.Queries
                         .Add(""_id"", new BsonDocument()
                                 .Add(""film\u1390title"", ""$film.title"")
                         )
-                        .Add(""COUNT(*)"", new BsonDocument()
+                        .Add(""count"", new BsonDocument()
                                 .Add(""$sum"", 1)
                         )),
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""film.title"", ""$_id.film\u1390title"")
-                        .Add(""COUNT(*)"", ""$COUNT(*)"")
+                        .Add(""count"", ""$count"")
                         .Add(""_id"", 0)),
                 new BsonDocument(""$sort"", new BsonDocument()
-                        .Add(""COUNT(*)"", -1)),
+                        .Add(""count"", -1)),
                 new BsonDocument(""$limit"", 10)
             };";
         public Aufgabe4g(ILogger<QueryBuilder> logger,

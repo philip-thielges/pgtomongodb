@@ -12,7 +12,7 @@ namespace PostgreToMongo.Queries
     {
         private static readonly string customCall = @"var customerCollection = Database.GetCollection<BsonDocument>(""customer"");
 
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""_id"", 0)
@@ -29,15 +29,15 @@ namespace PostgreToMongo.Queries
                         .Add(""_id"", new BsonDocument()
                                 .Add(""customer\u1390customer_id"", ""$customer.customer_id"")
                         )
-                        .Add(""COUNT(*)"", new BsonDocument()
+                        .Add(""count"", new BsonDocument()
                                 .Add(""$sum"", 1)
                         )),
                 new BsonDocument(""$project"", new BsonDocument()
                         .Add(""customer.customer_id"", ""$_id.customer\u1390customer_id"")
-                        .Add(""COUNT(*)"", ""$COUNT(*)"")
+                        .Add(""count"", ""$count"")
                         .Add(""_id"", 0)),
                 new BsonDocument(""$sort"", new BsonDocument()
-                        .Add(""COUNT(*)"", -1)),
+                        .Add(""count"", -1)),
                 new BsonDocument(""$limit"", 10)
             };";
 
