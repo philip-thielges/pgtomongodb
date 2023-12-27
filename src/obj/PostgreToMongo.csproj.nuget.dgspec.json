@@ -1,0 +1,75 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\Dokumente\\FH-Wedel\\DaSi\\Semester_1\\Datenbanktechnologien\\Übung\\pgtomongodb\\src\\PostgreToMongo.csproj": {}
+  },
+  "projects": {
+    "E:\\Dokumente\\FH-Wedel\\DaSi\\Semester_1\\Datenbanktechnologien\\Übung\\pgtomongodb\\src\\PostgreToMongo.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Dokumente\\FH-Wedel\\DaSi\\Semester_1\\Datenbanktechnologien\\Übung\\pgtomongodb\\src\\PostgreToMongo.csproj",
+        "projectName": "PostgreToMongo",
+        "projectPath": "E:\\Dokumente\\FH-Wedel\\DaSi\\Semester_1\\Datenbanktechnologien\\Übung\\pgtomongodb\\src\\PostgreToMongo.csproj",
+        "packagesPath": "C:\\Users\\Johann\\.nuget\\packages\\",
+        "outputPath": "E:\\Dokumente\\FH-Wedel\\DaSi\\Semester_1\\Datenbanktechnologien\\Übung\\pgtomongodb\\src\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Johann\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.18.0, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

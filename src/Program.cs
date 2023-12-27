@@ -19,7 +19,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         // PostgreSQL service
         services.AddScoped<IPostgreService, PostgreService>();
 
-        // Add Queries
+        // Add all the queries to the DI
         services.AddScoped<IQueryBuilder, Aufgabe4a>();
         services.AddScoped<IQueryBuilder, Aufgabe4b>();
         services.AddScoped<IQueryBuilder, Aufgabe4c>();

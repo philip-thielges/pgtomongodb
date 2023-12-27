@@ -15,15 +15,15 @@ namespace PostgreToMongo.Services
         private readonly NpgsqlDataSource _npgsqlDataSource;
         private readonly ILogger<PostgreService> _logger;
 
-        // get related service and options via DI
+        // inject the logger and the connection string from the appsettings.json
         public PostgreService(ILogger<PostgreService> logger,
-            IOptions<PostgreSettings> postgreSettings)
+            IOptions<PostgreSettings> postgreSettings) 
         {
             _npgsqlDataSource = NpgsqlDataSource.Create(postgreSettings.Value.ConnectionString);
             _logger = logger;
         }
 
-        // close the DB connection when the service will be disposed
+        // this method is called by the DI, when the object is no longer needed.
         public ValueTask DisposeAsync()
         {
             if (_npgsqlDataSource is not null)

@@ -35,14 +35,14 @@ namespace PostgreToMongo.Queries
 
             PipelineDefinition<BsonDocument, BsonDocument> filter = new BsonDocument[]
             {
-                new BsonDocument("$group", new BsonDocument()
+                new BsonDocument("$group", new BsonDocument() // $group is the aggregation operator
                         .Add("_id", new BsonDocument())
                         .Add("SUM", new BsonDocument()
-                                .Add("$sum", 1)
+                                .Add("$sum", 1) // $sum is the aggregation operator
                         )),
-                new BsonDocument("$project", new BsonDocument()
-                        .Add("SUMME", "$SUM")
-                        .Add("_id", 0))
+                new BsonDocument("$project", new BsonDocument() // $project is the aggregation operator
+                        .Add("SUMME", "$SUM") // SUMME is the name of the new field
+                        .Add("_id", 0)) // _id is always added by default, so we have to remove it
 
             };
 

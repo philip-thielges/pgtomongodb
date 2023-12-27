@@ -53,12 +53,12 @@ namespace PostgreToMongo.Queries
                 new BsonDocument("$project", new BsonDocument()
                         .Add("_id", 0)
                         .Add("staff", "$$ROOT")),
-                new BsonDocument("$lookup", new BsonDocument()
+                new BsonDocument("$lookup", new BsonDocument() // $lookup is the aggregation operator
                         .Add("localField", "staff.staff_id")
                         .Add("from", "payment")
                         .Add("foreignField", "staff_id")
                         .Add("as", "payment")),
-                new BsonDocument("$unwind", new BsonDocument()
+                new BsonDocument("$unwind", new BsonDocument() // $unwind is the aggregation operator
                         .Add("path", "$payment")
                         .Add("preserveNullAndEmptyArrays", new BsonBoolean(false))),
                 new BsonDocument("$group", new BsonDocument()

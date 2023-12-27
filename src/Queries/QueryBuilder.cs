@@ -8,7 +8,7 @@ namespace PostgreToMongo.Queries
 {
     /// <summary>
     /// This class has to be implmented for all excersices.
-    /// And all the excersices will than be injected to the DI.
+    /// And all the excersices will than be injected to the Dependency Injection.
     /// </summary>
     public abstract class QueryBuilder : IQueryBuilder
     {
@@ -58,10 +58,10 @@ namespace PostgreToMongo.Queries
         protected IMongoDatabase Database { get; set; }
 
         private void LogQueryCall() =>
-            customLogger.LogInformation($"----------------------------------\nVerwendeter Befehl:\n{customCall}");
+            customLogger.LogInformation($"####################################\nVerwendeter Befehl:\n{customCall}");
 
         private void LogResults() =>
-            customLogger.LogInformation($"----------------------------------\nErgebnis:\n{string.Join("\n", QueryResults ?? Array.Empty<string>().ToList())}");
+            customLogger.LogInformation($"####################################\nErgebnis:\n{string.Join("\n", QueryResults ?? Array.Empty<string>().ToList())}");
 
         /// <summary>
         /// Helper Method to execute and aggregation call.
